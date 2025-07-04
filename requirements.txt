@@ -1,0 +1,5 @@
+langchain-openai
+pandas
+faiss-cpu
+google-api-python-client
+langchain-community
