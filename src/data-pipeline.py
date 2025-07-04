@@ -197,11 +197,10 @@ def load_data_from_google_books(loader) -> pd.DataFrame:
     print(f"Categories: {sample['categories']}\nPrimary Category: {sample['primary_category']}\nSearch Strategy: {sample['search_strategy']}\nRetrieval Timestamp: {sample['retrieval_timestamp']}")
     return df_books
 
-def embed_data(df_books):
+def embed_data(df_books, embeddings_model):
     """
     Embed data using OpenAIEmbeddings and return embeddings model and dataframe with embeddings
     """
-    embeddings_model = OpenAIEmbeddings( model="text-embedding-3-small", api_key=os.getenv("OPENAI_API_KEY"))
 
     # Batch processing for efficiency
     batch_size = 50
@@ -226,7 +225,7 @@ def create_and_save_vector_store(df_books, embeddings_model):
         embedding=embeddings_model,
         metadatas=df_books.drop(columns=["description", "embedding"]).to_dict("records")
     )
-    vector_store.save_local("../data/book_index")    
+    vector_store.save_local("../book_index")    
     return vector_store
 
 def data_pipeline():
@@ -246,7 +245,8 @@ def data_pipeline():
     # print(f"Authors: {df_books['authors'].iloc[0]}")
     # print(f"Description: {df_books['description'].iloc[0]}")
 
-    df_books, embeddings_model = embed_data(df_books)
+    embeddings_model = OpenAIEmbeddings( model="text-embedding-3-small", api_key=os.getenv("OPENAI_API_KEY"))
+    df_books = embed_data(df_books, embeddings_model)
 
     # print(f"embeddings type: {type(df_books['embedding'].iloc[0])}")
     # print(f"embeddings length: {len(df_books['embedding'].iloc[0])}")
