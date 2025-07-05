@@ -89,15 +89,18 @@ cd src
 streamlit run interface.py
 ```
 
-#### Option B: Command Line
+#### Option B: Recommendation Command Line
+note: change the query on the main
 ```bash
-python -m src.main
+cd src
+python3 main.py
 ```
 
-#### Option C: Direct Pipeline
-```bash
-python -c "from src.pipeline import run_data_pipeline; run_data_pipeline()"
-```
+#### Option C: Run Chain pipeline
+````bash
+cd src
+python3 pipeline.py
+````
 
 ## 🔧 Core Features
 
@@ -155,19 +158,6 @@ Each chain provides detailed execution statistics:
 
 ## 🎯 Recommendation Engine
 
-### Usage Examples
-
-```python
-from services.recommendation_service import recommend_books
-
-# Get recommendations
-results = recommend_books("machine learning and artificial intelligence", 5)
-
-# Test vector store
-from services.recommendation_service import test_vector_store
-test_vector_store()
-```
-
 ## 🖥️ Web Interface
 
 ### Features
@@ -205,7 +195,7 @@ config = {
 
 ## 🔍 API Integration
 
-### Google Books API
+### Google Books API Loader
 - **Systematic Collection**: Multiple search strategies
 - **Rate Limiting**: Built-in API protection
 - **Error Handling**: Robust error recovery
@@ -236,91 +226,9 @@ config = {
 
 ### 🚀 Key Performance Improvements
 
-#### 1. **NLTK Text Preprocessing** ⭐ **BIGGEST IMPROVEMENT**
-**Impact**: 70-80% improvement in recommendation quality and 60% faster preprocessing
+#### 1. **NLTK Text Preprocessing** ⭐ **BIGGEST IMPLEMENTED IMPROVEMENT**
+**Impact**: improvement in recommendation quality and  faster preprocessing
 
-# Tokenization with POS tagging
-tokens = word_tokenize(text)
-pos_tags = pos_tag(tokens)
+#### 2. ** USE DB TO STORE BASE LOAD DATA FOR BACKUP
 
-# Lemmatization with POS awareness
-lemmatizer = WordNetLemmatizer()
-lemmatized = [lemmatizer.lemmatize(token, pos=get_wordnet_pos(tag)) 
-              for token, tag in pos_tags]
-
-# Advanced stop word removal
-stop_words = set(stopwords.words('english'))
-filtered = [word for word in lemmatized if word not in stop_words]
-```
-
-**Benefits:**
-- **Semantic Preservation**: Lemmatization maintains word meaning (running → run)
-- **Noise Reduction**: Advanced stop word removal and book-specific cleaning
-- **Consistency**: Standardized processing across all texts
-- **Better Embeddings**: Cleaner text produces more accurate semantic vectors
-
-
-#### 3. **FAISS Vector Store Optimization**
-**Impact**: faster similarity search
-
-
-### 🚀 Future Performance Improvements
-
-#### **GPU Acceleration**
-```python
-# GPU-accelerated embeddings (if available)
-import torch
-if torch.cuda.is_available():
-    embeddings_model = embeddings_model.to('cuda')
-```
-
-#### 3. **Incremental Updates**
-```python
-# Update vector store incrementally
-def incremental_update(new_books):
-    existing_index = faiss.read_index('book_index/index.faiss')
-    new_embeddings = generate_embeddings(new_books)
-    existing_index.add(new_embeddings)
-    faiss.write_index(existing_index, 'book_index/index.faiss')
-```
-
-#### 4. **Advanced Caching**
-```python
-# Redis caching for frequently accessed data
-import redis
-cache = redis.Redis(host='localhost', port=6379, db=0)
-
-def get_cached_recommendations(query):
-    cache_key = f"rec:{hash(query)}"
-    cached = cache.get(cache_key)
-    if cached:
-        return json.loads(cached)
-    # Generate and cache
-    results = generate_recommendations(query)
-    cache.setex(cache_key, 3600, json.dumps(results))
-    return results
-```
-
-### 📈 Performance Recommendations
-
-#### For Production Deployment
-1. **Use NLTK Preprocessing**: Essential for quality recommendations
-2. **Implement Caching**: Reduce redundant computations
-3. **Monitor Performance**: Track metrics continuously
-4. **Optimize Batch Sizes**: Balance speed and memory usage
-5. **Use Incremental Updates**: Avoid full reprocessing
-
-#### For Development
-1. **Profile Code**: Identify bottlenecks early
-2. **Test with Real Data**: Validate performance assumptions
-3. **Iterate on Preprocessing**: Fine-tune NLTK parameters
-4. **Monitor Memory**: Prevent memory leaks
-5. **Document Performance**: Track improvements over time
-
-## 📚 Documentation & Evaluation
-
-### Evaluation Report
-- **Recommendation Quality**: 85-95% relevance score (improved from 60-70%)
-- **Processing Speed**: 60% faster text preprocessing with NLTK
-- **Search Performance**: Sub-second response times for recommendations
-- **Key Improvement**: NLTK text preprocessing provided the biggest performance boost
+#### 2. **STORE BASE LOAD DATA FOR BACKUP
