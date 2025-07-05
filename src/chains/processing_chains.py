@@ -2,9 +2,9 @@ from typing import List, Dict, Any
 import re
 import pandas as pd
 from pydantic import Field
-from ..core.base_chain import MonitoredDataChain
-from ..core.text_preprocessor import create_preprocessing_pipeline
-from ..core.data_processor import embed_data, create_and_save_vector_store
+from core.base_chain import MonitoredDataChain
+from core.text_preprocessor import create_preprocessing_pipeline
+from core.data_processor import embed_data, create_and_save_vector_store
 
 class DataCleaningChain(MonitoredDataChain):
     """Chain for automated data cleaning"""

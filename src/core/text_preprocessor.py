@@ -12,13 +12,18 @@ from typing import List, Dict, Optional
 def _ensure_nltk_data():
     """Ensure all required NLTK data is downloaded"""
     required_packages = [
-        'punkt', 'punkt_tab', 'stopwords', 'wordnet', 
-        'averaged_perceptron_tagger', 'averaged_perceptron_tagger_eng'
+        'punkt', 'stopwords', 'wordnet', 
+        'averaged_perceptron_tagger'
     ]
     
     for package in required_packages:
         try:
-            nltk.data.find(f'tokenizers/{package}' if 'punkt' in package else f'corpora/{package}' if package in ['stopwords', 'wordnet'] else f'taggers/{package}')
+            if 'punkt' in package:
+                nltk.data.find('tokenizers/punkt')
+            elif package in ['stopwords', 'wordnet']:
+                nltk.data.find(f'corpora/{package}')
+            else:
+                nltk.data.find(f'taggers/{package}')
         except LookupError:
             nltk.download(package)
 
