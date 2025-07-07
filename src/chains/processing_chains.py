@@ -77,7 +77,6 @@ class EmbeddingGenerationChain(MonitoredDataChain):
         embedded_data = embedding_data(preprocessed_data, self.embeddings_model, use_preprocessed=True)
         return {self.output_key: embedded_data}
        
-
 class VectorStoreCreationChain(MonitoredDataChain):
     """Chain for vector store creation"""
     

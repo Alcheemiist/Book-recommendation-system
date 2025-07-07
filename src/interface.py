@@ -390,542 +390,100 @@ def recommendation_interface():
                     st.error(f"❌ Error during search: {str(e)}")
 
 def documentation_page():
-    """Documentation page describing system architecture and techniques"""
+    """Concise documentation page for the Book Recommendation System"""
     st.header("📚 System Documentation")
-    
-    # Table of contents
-    st.sidebar.markdown("## 📋 Table of Contents")
+
     toc = st.sidebar.radio(
         "Jump to section:",
-        ["🏗️ Architecture Overview", "🔗 LangChain Framework", "📊 Data Pipeline", "🔍 Recommendation Engine", "🔤 Text Preprocessing", "🗄️ Vector Store", "⚙️ Configuration", "🚀 API Integration"]
+        [
+            "System Overview",
+            "How It Works",
+            "Main Features",
+            "Configuration",
+            "How to Use",
+            "Key Technologies"
+        ]
     )
-    
-    if toc == "🏗️ Architecture Overview":
-        st.subheader("🏗️ System Architecture")
-        
-        st.write("""
-        The Book Recommendation System is built with a modular architecture that separates data collection, 
-        processing, and recommendation generation into distinct components.
-        """)
-        
-        # Architecture diagram
-        st.write("### System Components")
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            st.info("**📥 Data Collection**\n\nGoogle Books API\nSystematic data gathering\nRate limiting & error handling")
-        
-        with col2:
-            st.info("**🔧 Processing Pipeline**\n\nText preprocessing\nEmbedding generation\nVector store creation")
-        
-        with col3:
-            st.info("**🔍 Recommendation Engine**\n\nSemantic search\nSimilarity scoring\nResult ranking")
-        
-        st.write("### Data Flow")
-        st.code("""
-Google Books API → Raw Data → Text Preprocessing → Embeddings → FAISS Vector Store → Recommendations
-        """, language="text")
-        
-        st.write("### Key Technologies")
-        st.write("- **Google Books API**: Data collection")
-        st.write("- **OpenAI Embeddings**: Semantic vector generation")
-        st.write("- **FAISS**: High-performance similarity search")
-        st.write("- **NLTK**: Text preprocessing and NLP")
-        st.write("- **LangChain**: Modular processing chains")
-        st.write("- **Streamlit**: User interface")
-        st.write("- **Pandas**: Data manipulation")
-        
-    elif toc == "🔗 LangChain Framework":
-        st.subheader("🔗 LangChain Framework Integration")
-        
-        st.write("""
-        The system leverages LangChain's powerful chain architecture to create a modular, 
-        monitored, and extensible data processing pipeline. LangChain provides the foundation 
-        for building complex workflows with built-in monitoring and error handling.
-        """)
-        
-        # LangChain Overview
-        st.write("### What is LangChain?")
-        st.write("""
-        LangChain is a framework for developing applications powered by language models. 
-        It provides a set of tools and abstractions for building complex AI applications, 
-        including chains, agents, and memory systems.
-        """)
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.write("**LangChain Benefits:**")
-            st.write("- **Modular Design**: Reusable components")
-            st.write("- **Built-in Monitoring**: Execution tracking")
-            st.write("- **Error Handling**: Graceful failure recovery")
-            st.write("- **Extensibility**: Easy to add new chains")
-            st.write("- **Composability**: Chain combination and reordering")
-        
-        with col2:
-            st.write("**Chain Features:**")
-            st.write("- **Input/Output Validation**: Type checking")
-            st.write("- **Execution Statistics**: Performance metrics")
-            st.write("- **Batch Processing**: Efficient data handling")
-            st.write("- **Configuration**: Flexible parameters")
-            st.write("- **Logging**: Comprehensive execution logs")
-        
-        # SequentialChain Explanation
-        st.write("### SequentialChain Architecture")
-        st.write("""
-        The system uses LangChain's SequentialChain to orchestrate the complete data processing pipeline. 
-        SequentialChain allows multiple processing steps to be executed in sequence, with each step's 
-        output becoming the input for the next step.
-        """)
-        
-        st.code("""
-SequentialChain(
-    chains=[
-        DataCleaningChain(),
-        TextPreprocessingChain(),
-        EmbeddingGenerationChain(),
-        VectorStoreCreationChain()
-    ],
-    input_variables=["raw_data"],
-    output_variables=["cleaned_data", "preprocessed_data", "embedded_data", "vector_store_path"],
-    verbose=True
-)
-        """, language="python")
-        
-        # Chain Flow Diagram
-        st.write("### Chain Processing Flow")
-        st.code("""
-Raw Data → DataCleaningChain → TextPreprocessingChain → EmbeddingGenerationChain → VectorStoreCreationChain
-    ↓              ↓                      ↓                      ↓                      ↓
-cleaned_data  preprocessed_data    embedded_data        vector_store_path      Final Results
-        """, language="text")
-        
-        # Individual Chains
-        st.write("### Individual Processing Chains")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.write("**🔧 DataCleaningChain**")
-            st.write("- Removes duplicates and missing values")
-            st.write("- Cleans text descriptions")
-            st.write("- Handles data validation")
-            st.write("- **Input**: Raw book data")
-            st.write("- **Output**: Cleaned data")
-        
-        with col2:
-            st.write("**🔤 TextPreprocessingChain**")
-            st.write("- Applies NLTK preprocessing")
-            st.write("- Tokenization and lemmatization")
-            st.write("- Stop word removal")
-            st.write("- **Input**: Cleaned data")
-            st.write("- **Output**: Preprocessed text")
-        
-        col3, col4 = st.columns(2)
-        
-        with col3:
-            st.write("**🧠 EmbeddingGenerationChain**")
-            st.write("- Generates OpenAI embeddings")
-            st.write("- Batch processing optimization")
-            st.write("- Error handling and retries")
-            st.write("- **Input**: Preprocessed data")
-            st.write("- **Output**: Embedded vectors")
-        
-        with col4:
-            st.write("**🗄️ VectorStoreCreationChain**")
-            st.write("- Creates FAISS vector store")
-            st.write("- Indexes embeddings")
-            st.write("- Stores metadata mapping")
-            st.write("- **Input**: Embedded data")
-            st.write("- **Output**: Vector store path")
-        
-        # Base Chain Features
-        st.write("### Base Chain Features")
-        st.write("""
-        All chains inherit from `MonitoredDataChain`, which provides:
-        """)
-        
-        st.code("""
-class MonitoredDataChain(Chain):
-    def _call(self, inputs):
-        start_time = time.time()
-        result = self.execute_chain(inputs)
-        
-        # Built-in monitoring
-        self.stats = {
-            'execution_time': end_time - start_time,
-            'input_size': len(inputs),
-            'output_size': len(result),
-            'timestamp': datetime.now().isoformat()
-        }
-        
-        self.log_execution()
-        return result
-        """, language="python")
-        
-        # Monitoring and Statistics
-        st.write("### Built-in Monitoring & Statistics")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.write("**Execution Metrics:**")
-            st.write("- **Execution Time**: Performance tracking")
-            st.write("- **Input Size**: Data volume monitoring")
-            st.write("- **Output Size**: Result validation")
-            st.write("- **Timestamps**: Process timing")
-        
-        with col2:
-            st.write("**Logging Features:**")
-            st.write("- **Chain Names**: Clear identification")
-            st.write("- **Error Logging**: Failure tracking")
-            st.write("- **Progress Updates**: Real-time status")
-            st.write("- **Statistics Output**: Performance reports")
-        
-        # Example Output
-        st.write("### Example Chain Execution Output")
-        st.code("""
-Chain 'DataCleaning' completed:
-  Execution time: 2.34s
-  Input size: 1
-  Output size: 1
 
-Chain 'TextPreprocessing' completed:
-  Execution time: 15.67s
-  Input size: 1
-  Output size: 1
+    if toc == "System Overview":
+        st.subheader("System Overview")
+        st.write("""
+        The Book Recommendation System is a modular application that enables users to discover books using semantic search. It integrates data collection, processing, and recommendation into a single, user-friendly interface.
+        """)
+        st.write("**Main Components:**")
+        st.markdown("- Data Collection (Google Books API)\n- Data Processing Pipeline (LangChain)\n- Embedding & Vector Store (OpenAI, FAISS)\n- Recommendation Engine (Semantic Search)\n- Streamlit User Interface")
 
-Chain 'EmbeddingGeneration' completed:
-  Execution time: 45.23s
-  Input size: 1
-  Output size: 1
+    elif toc == "How It Works":
+        st.subheader("How It Works")
+        st.write("""
+        1. **Data Collection:** Gathers book data from the Google Books API.
+        2. **Processing Pipeline:** Cleans and preprocesses text, generates embeddings, and builds a searchable vector store.
+        3. **Recommendation:** User queries are semantically matched to books using the vector store.
+        """)
+        st.code("""
+Google Books API → Data Cleaning → Text Preprocessing → Embeddings → FAISS Vector Store → Recommendations
+        """, language="text")
 
-Chain 'VectorStoreCreation' completed:
-  Execution time: 8.91s
-  Input size: 1
-  Output size: 1
-        """, language="text")
-        
-        # Extensibility
-        st.write("### Extending the Chain System")
+    elif toc == "Main Features":
+        st.subheader("Main Features")
         st.write("""
-        The modular chain architecture makes it easy to add new processing steps:
+        - **Dashboard:** Visualizes book data, categories, and authors.
+        - **Automated Chains:** Runs the full data processing pipeline with monitoring and error handling.
+        - **Recommendations:** Provides semantic book search with adjustable options.
         """)
-        
-        st.code("""
-class CustomChain(MonitoredDataChain):
-    def execute_chain(self, inputs):
-        # Your custom processing logic
-        data = inputs['input_data']
-        processed_data = self.custom_process(data)
-        return {'output_data': processed_data}
-    
-    def custom_process(self, data):
-        # Implement your processing logic
-        pass
-        """, language="python")
-        
-        st.write("**Adding to Pipeline:**")
-        st.code("""
-# Add your custom chain to the pipeline
-chains = [
-    DataCleaningChain(),
-    TextPreprocessingChain(),
-    CustomChain(),  # Your new chain
-    EmbeddingGenerationChain(),
-    VectorStoreCreationChain()
-]
-        """, language="python")
-        
-    elif toc == "📊 Data Pipeline":
-        st.subheader("📊 Data Pipeline")
-        
+        st.write("Navigate using the sidebar to access each feature.")
+
+    elif toc == "Configuration":
+        st.subheader("Configuration")
         st.write("""
-        The data pipeline is implemented using LangChain's SequentialChain architecture, providing 
-        automated, monitored, and extensible data processing. Each step is implemented as a 
-        separate chain that can be tested, modified, or replaced independently.
+        - **API Keys:** Set the following environment variables:
         """)
-        
-        st.write("### 1. Data Collection")
-        st.write("""
-        The system uses a systematic approach to collect diverse book data from Google Books API:
-        """)
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.write("**Search Strategies:**")
-            st.write("- Subject-based: Fiction, Science, History, etc.")
-            st.write("- Author-based: Popular authors across genres")
-            st.write("- Title-based: Key terms and topics")
-        
-        with col2:
-            st.write("**Quality Filters:**")
-            st.write("- Minimum description length (2048 chars)")
-            st.write("- Duplicate prevention")
-            st.write("- Language filtering (English)")
-            st.write("- Rate limiting with exponential backoff")
-        
-        st.write("### 2. Data Cleaning (DataCleaningChain)")
-        st.write("""
-        Raw data undergoes several cleaning steps through the automated DataCleaningChain:
-        """)
-        st.write("- **Automated Duplicate Removal**: Based on title and description similarity")
-        st.write("- **Missing Value Handling**: Intelligent handling of incomplete records")
-        st.write("- **Text Normalization**: Whitespace and formatting standardization")
-        st.write("- **Quality Filtering**: Removal of empty or invalid descriptions")
-        st.write("- **Built-in Monitoring**: Execution time and data volume tracking")
-        
-        st.write("### 3. Text Preprocessing (TextPreprocessingChain)")
-        st.write("""
-        Advanced text preprocessing improves similarity search quality through the TextPreprocessingChain:
-        """)
-        st.write("- **NLTK Integration**: Tokenization, lemmatization, POS tagging")
-        st.write("- **Configurable Pipeline**: Adjustable preprocessing parameters")
-        st.write("- **Stop Word Removal**: Common + book-specific terms")
-        st.write("- **Book-specific Cleaning**: Remove ISBNs, page counts, etc.")
-        st.write("- **Performance Optimization**: Efficient batch processing")
-        st.write("- **Execution Monitoring**: Real-time progress tracking")
-        
-        st.write("### 4. Embedding Generation (EmbeddingGenerationChain)")
-        st.write("""
-        The EmbeddingGenerationChain handles the creation of semantic vectors:
-        """)
-        st.write("- **OpenAI Integration**: text-embedding-3-small model")
-        st.write("- **Batch Processing**: Optimized API usage (50 documents per batch)")
-        st.write("- **Error Handling**: Automatic retries and fallback mechanisms")
-        st.write("- **Memory Management**: Efficient handling of large datasets")
-        st.write("- **Progress Tracking**: Real-time embedding generation status")
-        
-        st.write("### 5. Vector Store Creation (VectorStoreCreationChain)")
-        st.write("""
-        The VectorStoreCreationChain builds the searchable index:
-        """)
-        st.write("- **FAISS Integration**: High-performance similarity search")
-        st.write("- **Index Optimization**: Optimized for book recommendation queries")
-        st.write("- **Metadata Storage**: Book information mapping")
-        st.write("- **Persistent Storage**: Index saved to disk for reuse")
-        st.write("- **Validation**: Index integrity and performance verification")
-        
-    elif toc == "🔍 Recommendation Engine":
-        st.subheader("🔍 Recommendation Engine")
-        
-        st.write("### Semantic Search Process")
-        st.write("""
-        The recommendation engine uses semantic similarity to find relevant books:
-        """)
-        
-        st.write("1. **Query Processing**: User input is preprocessed and embedded")
-        st.write("2. **Vector Search**: FAISS performs similarity search")
-        st.write("3. **Score Calculation**: Cosine distance between query and book embeddings")
-        st.write("4. **Result Ranking**: Books ranked by similarity score")
-        st.write("5. **Filtering**: Optional minimum similarity threshold")
-        
-        st.write("### Similarity Scoring")
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.write("**Raw FAISS Scores:**")
-            st.write("- Cosine distance (0-2 range)")
-            st.write("- Lower = more similar")
-            st.write("- Direct vector comparison")
-        
-        with col2:
-            st.write("**Normalized Scores:**")
-            st.write("- Converted to 0-1 range")
-            st.write("- Higher = more similar")
-            st.write("- More intuitive interpretation")
-        
-        st.write("### Search Features")
-        st.write("- **Flexible Queries**: Natural language input")
-        st.write("- **Configurable Results**: Adjustable number of recommendations")
-        st.write("- **Score Filtering**: Minimum similarity thresholds")
-        st.write("- **Preprocessing Options**: Query preprocessing for better matching")
-        
-    elif toc == "🔤 Text Preprocessing":
-        st.subheader("🔤 Text Preprocessing Pipeline")
-        
-        st.write("### Preprocessing Steps")
-        
-        st.write("#### 1. Text Normalization")
-        st.code("""
-Input: "This groundbreaking BOOK explores..."
-→ Unicode normalization (NFKC)
-→ Case normalization (lowercase)
-→ Whitespace normalization
-Output: "this groundbreaking book explores..."
-        """, language="text")
-        
-        st.write("#### 2. Tokenization & Filtering")
-        st.code("""
-Input: "this groundbreaking book explores..."
-→ Word tokenization
-→ Length filtering (min 2 chars)
-→ Stop word removal
-→ Number filtering (optional)
-Output: ["groundbreaking", "book", "explores"]
-        """, language="text")
-        
-        st.write("#### 3. Lemmatization")
-        st.code("""
-Input: ["groundbreaking", "explores", "civilizations"]
-→ POS tagging
-→ WordNet lemmatization
-Output: ["groundbreaking", "explore", "civilization"]
-        """, language="text")
-        
-        st.write("### Book-Specific Cleaning")
-        st.write("The system removes book metadata that doesn't contribute to semantic meaning:")
-        st.write("- ISBN numbers and identifiers")
-        st.write("- Page counts and format information")
-        st.write("- Publication dates and edition info")
-        st.write("- Publisher metadata")
-        
-        st.write("### Configuration Options")
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.write("**Text Processing:**")
-            st.write("- Remove stop words")
-            st.write("- Use lemmatization")
-            st.write("- Normalize case")
-            st.write("- Remove punctuation")
-        
-        with col2:
-            st.write("**Filtering:**")
-            st.write("- Remove numbers")
-            st.write("- Minimum word length")
-            st.write("- Book-specific patterns")
-            st.write("- Custom stop words")
-        
-    elif toc == "🗄️ Vector Store":
-        st.subheader("🗄️ FAISS Vector Store")
-        
-        st.write("### What is FAISS?")
-        st.write("""
-        FAISS (Facebook AI Similarity Search) is a library for efficient similarity search and 
-        clustering of dense vectors. It's optimized for high-dimensional vectors like text embeddings.
-        """)
-        
-        st.write("### Vector Store Features")
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.write("**Performance:**")
-            st.write("- Fast similarity search")
-            st.write("- Scalable to millions of vectors")
-            st.write("- Memory-efficient indexing")
-            st.write("- GPU acceleration support")
-        
-        with col2:
-            st.write("**Search Capabilities:**")
-            st.write("- k-nearest neighbors")
-            st.write("- Range search")
-            st.write("- Approximate search")
-            st.write("- Batch queries")
-        
-        st.write("### Embedding Model")
-        st.write("**OpenAI text-embedding-3-small:**")
-        st.write("- 1536-dimensional vectors")
-        st.write("- Optimized for semantic similarity")
-        st.write("- Fast inference and low cost")
-        st.write("- High-quality semantic representations")
-        
-        st.write("### Storage Structure")
-        st.code("""
-book_index/
-├── index.faiss          # Vector index
-└── index.pkl           # Metadata mapping
-        """, language="text")
-        
-    elif toc == "⚙️ Configuration":
-        st.subheader("⚙️ System Configuration")
-        
-        st.write("### Environment Variables")
         st.code("""
 GOOGLE_API_KEY=your_google_books_api_key
 OPENAI_API_KEY=your_openai_api_key
         """, language="env")
-        
-        st.write("### API Rate Limiting")
-        st.write("**Google Books API:**")
-        st.write("- 2-second delay between requests")
-        st.write("- Exponential backoff for 429 errors")
-        st.write("- Maximum 3 retries per query")
-        st.write("- 300-second maximum wait time")
-        
-        st.write("**OpenAI API:**")
-        st.write("- Batch processing (50 documents)")
-        st.write("- Automatic retry on failures")
-        st.write("- Cost optimization with small model")
-        
-        st.write("### Data Quality Settings")
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.write("**Collection Filters:**")
-            st.write("- Min description: 2048 chars")
-            st.write("- Language: English only")
-            st.write("- Print type: Books only")
-            st.write("- Duplicate prevention")
-        
-        with col2:
-            st.write("**Processing Settings:**")
-            st.write("- Embedding model: text-embedding-3-small")
-            st.write("- Batch size: 50 documents")
-            st.write("- Vector dimensions: 1536")
-            st.write("- Index type: FAISS IndexFlatIP")
-        
-    elif toc == "🚀 API Integration":
-        st.subheader("🚀 API Integration")
-        
-        st.write("### Google Books API")
-        st.write("**Endpoint:** `https://www.googleapis.com/books/v1/volumes`")
-        
-        st.write("**Search Parameters:**")
+        st.write("""
+        - **Data Files:**
+            - Raw data: `data/books.csv`
+            - Embeddings: `data/books_embeddings.csv`
+            - Vector store: `book_index/`
+        - **Index Files:**
+            - `book_index/index.faiss` (vector index)
+            - `book_index/index.pkl` (metadata)
+        """)
+
+    elif toc == "How to Use":
+        st.subheader("How to Use")
+        st.write("""
+        1. **Run the Automated Pipeline:**
+            - Go to 'Automated Chains' and click 'Run LangChain Pipeline' to process data and build the vector store.
+        2. **Get Recommendations:**
+            - Go to 'Recommendations', enter a query, and receive book suggestions.
+        3. **Dashboard:**
+            - View data metrics and visualizations on the Dashboard.
+        """)
+        st.write("**Common Commands:**")
         st.code("""
-{
-    "q": "search_query",
-    "maxResults": 40,
-    "startIndex": 0,
-    "key": "API_KEY",
-    "printType": "books",
-    "langRestrict": "en"
-}
-        """, language="json")
-        
-        st.write("**Response Processing:**")
-        st.write("- Extract volume information")
-        st.write("- Filter by description quality")
-        st.write("- Store metadata and content")
-        st.write("- Handle pagination")
-        
-        st.write("### OpenAI Embeddings API")
-        st.write("**Model:** `text-embedding-3-small`")
-        
-        st.write("**Request Format:**")
-        st.code("""
-{
-    "input": ["text1", "text2", ...],
-    "model": "text-embedding-3-small"
-}
-        """, language="json")
-        
-        st.write("**Response:**")
-        st.write("- 1536-dimensional vectors")
-        st.write("- Normalized embeddings")
-        st.write("- Batch processing support")
-        
-        st.write("### Error Handling")
-        st.write("**Rate Limiting:**")
-        st.write("- Exponential backoff strategy")
-        st.write("- Request queuing")
-        st.write("- Graceful degradation")
-        
-        st.write("**API Failures:**")
-        st.write("- Automatic retries")
-        st.write("- Error logging")
-        st.write("- Fallback mechanisms")
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the Streamlit app
+streamlit run src/interface.py
+        """, language="bash")
+        st.write("**Troubleshooting:**")
+        st.markdown("- Ensure API keys are set.\n- Check that data and index files exist.\n- If recommendations fail, rerun the pipeline.")
+
+    elif toc == "Key Technologies":
+        st.subheader("Key Technologies")
+        st.write("""
+        - **Streamlit:** User interface
+        - **Pandas:** Data manipulation
+        - **Plotly:** Visualizations
+        - **LangChain:** Data processing pipeline
+        - **OpenAI:** Embedding generation
+        - **FAISS:** Vector similarity search
+        - **NLTK:** Text preprocessing
+        """)
 
 def automated_chains_interface():
     """Interface for automated LangChain processing chains"""

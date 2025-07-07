@@ -1,0 +1,22 @@
+Report generated: 2025-07-07 19:57:55
+Total queries evaluated: 10
+Total recommendations returned: 50
+Unique recommended titles: 50
+Average similarity score: 0.251
+Max similarity score: 0.439
+Min similarity score: 0.079
+Top recommended categories:
+  Business & Economics: 6
+  Science: 6
+  General: 6
+  Fiction: 6
+  Computers: 3
+Top recommended authors:
+  Unknown: 3
+  Charles Dickens: 2
+  Ray Bradbury: 2
+  Philip K. Dick: 2
+  Stanley Schmidt: 1
+
+=== Suggestions for Improvement ===
+- Improve the quality of book descriptions and metadata for better semantic matching.
