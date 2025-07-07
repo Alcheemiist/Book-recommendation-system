@@ -32,10 +32,10 @@ def main():
             print(results[['title', 'authors', 'similarity_score']].to_string(index=False))
         else:
             print("❌ Vector store test failed. Running pipeline...")
-            run_data_pipeline()
+            run_data_pipeline(books_index_file)
     else:
         print("❌ Vector store not found. Running pipeline...")
-        run_data_pipeline()
+        run_data_pipeline(books_index_file)
 
 if __name__ == "__main__":
     main() 

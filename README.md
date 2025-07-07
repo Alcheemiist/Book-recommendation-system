@@ -6,33 +6,41 @@ A book recommendation system using LangChain, OpenAI embeddings, and FAISS vecto
 
 ### System Architecture
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Data Layer    │    │  Processing     │    │  Application    │
-│                 │    │    Layer        │    │     Layer       │
-├─────────────────┤    ├─────────────────┤    ├─────────────────┤
-│ • Google Books  │───▶│ • LangChain     │───▶│ • Streamlit UI  │
-│   API Loader    │    │   Chains        │    │ • CLI Interface │
-│                 │    │ • Clean data    |    |                 |    
-|                 |    | • Text Preproc  │    │ • Evaluation    │
-│                 │    │ • Embeddings    │    │   Service       │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+┌─────────────────┐    ┌─────────────────┐    ┌──────────────────────────────┐
+│   Data Layer    │    │  Processing     │    │      Application Layer       │
+│                 │    │    Layer        │    ├──────────────────────────────┤
+├─────────────────┤    ├─────────────────┤    │ • Streamlit UI               │
+│ • Google Books  │───▶│ • LangChain     │───▶│ • CLI Interface              │
+│   API Loader    │    │   Chains        │    │                              │
+│                 │    │ • Clean data    |    │ • Recommendation Service     │
+|                 |    | • Text Preproc  │    │                              │
+│                 │    │ • Embeddings    │    │                              │
+└─────────────────┘    └─────────────────┘    └──────────────────────────────┘
 ```
 
 ### Data Flow
 ```
-Google Books API → Raw Data → Text Preprocessing → OpenAI Embeddings → FAISS Vector Store → Recommendations
+Google Books API → Raw Data → Text Preprocessing → OpenAI Embeddings → FAISS Vector Store → Recommendation Service → Recommendations
 ```
 
 ### Modular Design
 - **Core Module**: Base functionality and utilities
 - **Chains Module**: LangChain processing pipeline
-- **Services Module**: Algorithm and recommendation engine
+- **Services Module**: Algorithm and recommendation engine (Recommendation Service)
 - **Interface Module**: User interaction layer
 
 ## 🚀 Quick Start
 
 ### Setup
 ```bash
+# clone project
+git clone https://github.com/Alcheemiist/Book-recommendation-system.git
+cd Book-recommendation-system
+
+# create virtual environment
+python3 -m venv myenv
+source myenv/bin/activate
+
 # Install dependencies
 pip install -r requirements.txt
 
@@ -62,18 +70,18 @@ Book-recommendation-system/
 ├── src/                                   # Main source code
 |
 │   ├── core/                              # Core functionality
-│   │   ├── __init__.py
+│   │   |
 │   │   ├── base_chain.py                  # Base chain with monitoring
 │   │   ├── data_loader.py                 # Google Books API loader
 │   │   ├── data_processor.py              # Data processing utilities
 │   │   └── text_preprocessor.py           # NLTK text preprocessing
 |   |
 │   ├── chains/                            # LangChain processing chains
-│   │   ├── __init__.py
+│   │   |
 │   │   └── processing_chains.py           # All processing chain classes
 |   |
 │   ├── services/                          # Business logic services
-│   │   ├── __init__.py
+│   │   |
 │   │   └── recommendation_service.py      # Recommendation engine
 |   |
 │   ├── interface.py                       # Streamlit web interface
@@ -131,3 +139,7 @@ Book-recommendation-system/
 - `data/books_embeddings.csv` - Processed embeddings for vector search
 - `book_index/` - FAISS vector store for fast similarity search
 - `src/recommendation_performance_report.txt` - Performance metrics and analysis
+
+## 📊 Books Distribution
+
+- total books : 
