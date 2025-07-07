@@ -35,16 +35,9 @@ The system was evaluated using 10 diverse queries, comparing two modes:
 ---
 *For details, see the full reports: `recommendation_performance_report_nltk.txt` and `recommendation_performance_report_raw.txt`.* 
 
-
-# Suggested Improvements for Similarity Search in Book Recommendation System
-
-Enhancing the similarity search can significantly improve the quality and relevance of book recommendations. Here are several strategies to consider:
-
----
-
 ## Insights about the implemented improvement of data preprocessing:
 
-- **Preprocessing user queries with NLTK** (tokenization, lemmatization, stopword removal) leads to higher average similarity scores and slightly better semantic matching.
+- **Preprocessing user queries with NLTK** (normalization, tokenization, lemmatization, stopword removal) leads to higher average similarity scores and slightly better semantic matching.
 - Both modes return a diverse set of recommendations, but preprocessing improves the quality and relevance of results.
 - The most effective improvement implemented so far is the use of NLTK-based preprocessing for both the dataset and user queries.
 
