@@ -13,36 +13,30 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     print(f"Cleaned dataset shape: {df.shape}")
     return df
 
-def embedding_data(df_books: pd.DataFrame, embeddings_model: OpenAIEmbeddings, use_preprocessed: bool = True) -> pd.DataFrame:
-    """Generate embeddings for book descriptions"""
+def embedding_data(df_books: pd.DataFrame, embeddings_model: OpenAIEmbeddings, use_preprocessed: bool = True, batch_size: int = 300) -> pd.DataFrame:
+    """Generate embeddings for book descriptions in batches of 300 rows"""
     df = df_books.copy()
-    
-    # Use preprocessed descriptions if available
     text_column = 'description_processed' if use_preprocessed and 'description_processed' in df.columns else 'description'
-
-    # Generate embeddings
     print(f"Generating embeddings for {len(df)} books using column: {text_column}")
     texts = df[text_column].tolist()
-    df['embedding'] = embeddings_model.embed_documents(texts)
-    
-    # Save embeddings to CSV
+    all_embeddings = []
+    for i in range(0, len(texts), batch_size):
+        batch = texts[i:i+batch_size]
+        batch_embeddings = embeddings_model.embed_documents(batch)
+        all_embeddings.extend(batch_embeddings)
+    df['embedding'] = all_embeddings
     df.to_csv("../data/books_embeddings.csv", index=False)
     print("Embeddings saved to ../data/books_embeddings.csv")
     return df
 
 def create_and_save_vector_store(df_books: pd.DataFrame, embeddings_model: OpenAIEmbeddings, use_preprocessed: bool = True) -> str:
-    """Create and save FAISS vector store"""
+    """Create and save FAISS vector store using precomputed embeddings"""
     df = df_books.copy()
-    
-    # Use preprocessed descriptions if available
     text_column = 'description_processed' if use_preprocessed and 'description_processed' in df.columns else 'description'
-    
+
     print(f"Creating vector store with {len(df)} books using column: {text_column}")
-    
-    # Prepare texts and metadata
     texts = df[text_column].tolist()
     metadatas = []
-    
     for _, row in df.iterrows():
         metadata = {
             "id": row["id"],
@@ -54,15 +48,16 @@ def create_and_save_vector_store(df_books: pd.DataFrame, embeddings_model: OpenA
             "retrieval_timestamp": row.get("retrieval_timestamp", "")
         }
         metadatas.append(metadata)
+    # Use embeddings from the DataFrame
+    embeddings = df['embedding'].tolist()
     
-    # Create vector store
-    vector_store = FAISS.from_texts(
-        texts=texts,
+    # Prepare text_embeddings as list of (text, embedding) tuples
+    text_embeddings = list(zip(texts, embeddings))
+    vector_store = FAISS.from_embeddings(
+        text_embeddings=text_embeddings,
         embedding=embeddings_model,
         metadatas=metadatas
     )
-    
-    # Save vector store
     vector_store_path = "../book_index/"
     vector_store.save_local(vector_store_path)
     print("Vector store saved to ", vector_store_path)

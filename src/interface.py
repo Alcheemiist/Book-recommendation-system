@@ -227,9 +227,7 @@ def recommendation_interface():
                     st.info(f"🔍 Searching for: '{search_query}'")
                     st.info(f"📊 Requesting {k} recommendations")
                     
-                    # Show preprocessing info if used
-                    if use_preprocessed and search_query != query:
-                        st.info(f"🔤 Query preprocessing applied: '{query}' → '{search_query}'")
+                    
                     
                     try:
                         results = recommend_books(search_query, k)
