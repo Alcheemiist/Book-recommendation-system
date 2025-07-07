@@ -23,6 +23,11 @@ A book recommendation system using LangChain, OpenAI embeddings, and FAISS vecto
 Google Books API → Raw Data → Text Preprocessing → OpenAI Embeddings → FAISS Vector Store → Recommendation Service → Recommendations
 ```
 
+### Book store
+````
+Actual size of the books vector store is 963 book
+````
+
 ### Modular Design
 - **Core Module**: Base functionality and utilities
 - **Chains Module**: LangChain processing pipeline
@@ -33,7 +38,6 @@ Google Books API → Raw Data → Text Preprocessing → OpenAI Embeddings → F
 
 ### Setup
 
-#### Note : due to the size of 963 books data the project 
 ```bash
 # clone project
 git clone https://github.com/Alcheemiist/Book-recommendation-system.git
