@@ -32,6 +32,8 @@ Google Books API → Raw Data → Text Preprocessing → OpenAI Embeddings → F
 ## 🚀 Quick Start
 
 ### Setup
+
+#### Note : due to the size of 963 books data the project 
 ```bash
 # clone project
 git clone https://github.com/Alcheemiist/Book-recommendation-system.git
