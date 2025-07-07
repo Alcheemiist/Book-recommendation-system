@@ -1,10 +1,9 @@
 from typing import List, Dict, Any
-import re
-import pandas as pd
 from pydantic import Field
 from core.base_chain import MonitoredDataChain
-from core.text_preprocessor import create_preprocessing_pipeline
-from core.data_processor import embed_data, create_and_save_vector_store
+from core.text_preprocessor import preprocessing_pipeline
+from core.data_processor import embedding_data, create_and_save_vector_store
+from core.data_processor import clean_data
 
 class DataCleaningChain(MonitoredDataChain):
     """Chain for automated data cleaning"""
@@ -25,25 +24,10 @@ class DataCleaningChain(MonitoredDataChain):
     
     def execute_chain(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
         raw_data = inputs[self.input_key]
-        cleaned_data = self.clean_data(raw_data)
+        cleaned_data = clean_data(raw_data)
+        print(f"Cleaned dataset shape: {cleaned_data.shape}")
         return {self.output_key: cleaned_data}
     
-    def clean_data(self, data: pd.DataFrame) -> pd.DataFrame:
-        """Automated data cleaning"""
-        df = data.copy()
-        df = df.drop_duplicates()
-        df['description'] = df['description'].apply(self.clean_description)
-        df = df.dropna(subset=['title', 'description'])
-        return df
-    
-    def clean_description(self, text: str) -> str:
-        """Clean book description text"""
-        if pd.isna(text):
-            return ""
-        text = re.sub(r'\s+', ' ', text).strip()
-        text = re.sub(r'[^\w\s\.\,\!\?\-]', '', text)
-        return text
-
 class TextPreprocessingChain(MonitoredDataChain):
     """Chain for text preprocessing"""
     
@@ -64,16 +48,11 @@ class TextPreprocessingChain(MonitoredDataChain):
     
     def execute_chain(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
         processed_data = inputs[self.input_key]
-        preprocessed_data = self.preprocess_texts(processed_data)
-        return {self.output_key: preprocessed_data}
+        preprocessor = preprocessing_pipeline(self.config)
+        processed_data['description_processed'] = processed_data['description'].apply(preprocessor.
+        preprocess_text)
+        return {self.output_key: processed_data}
     
-    def preprocess_texts(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Apply text preprocessing to descriptions"""
-        df = df.copy()
-        preprocessor = create_preprocessing_pipeline(self.config)
-        df['description_processed'] = df['description'].apply(preprocessor.preprocess_text)
-        return df
-
 class EmbeddingGenerationChain(MonitoredDataChain):
     """Chain for embedding generation"""
     
@@ -93,13 +72,11 @@ class EmbeddingGenerationChain(MonitoredDataChain):
         return [self.output_key]
     
     def execute_chain(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
+        """Generate embeddings for preprocessed descriptions"""
         preprocessed_data = inputs[self.input_key]
-        embedded_data = self.generate_embeddings(preprocessed_data)
+        embedded_data = embedding_data(preprocessed_data, self.embeddings_model, use_preprocessed=True)
         return {self.output_key: embedded_data}
-    
-    def generate_embeddings(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Generate embeddings for processed descriptions"""
-        return embed_data(df, self.embeddings_model, use_preprocessed=True)
+       
 
 class VectorStoreCreationChain(MonitoredDataChain):
     """Chain for vector store creation"""
@@ -121,10 +98,5 @@ class VectorStoreCreationChain(MonitoredDataChain):
     
     def execute_chain(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
         embedded_data = inputs[self.input_key]
-        vector_store_path = self.create_vector_store(embedded_data)
+        vector_store_path =  create_and_save_vector_store(embedded_data, self.embeddings_model)
         return {self.output_key: vector_store_path}
-    
-    def create_vector_store(self, df: pd.DataFrame) -> str:
-        """Create FAISS vector store"""
-        create_and_save_vector_store(df, self.embeddings_model)
-        return "../book_index/" 

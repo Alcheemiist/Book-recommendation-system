@@ -6,7 +6,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.tag import pos_tag
 import pandas as pd
 import unicodedata
-from typing import List, Dict, Optional
+from typing import List, Dict
 
 # Download required NLTK data
 def _ensure_nltk_data():
@@ -124,27 +124,27 @@ class TextPreprocessor:
     
     def preprocess_text(self, text: str) -> str:
         """Complete text preprocessing pipeline"""
-        # Step 1: Normalize text
+        # Normalize text
         text = self.normalize_text(text)
         
-        # Step 2: Remove punctuation
+        # Remove punctuation
         if self.remove_punctuation:
             text = re.sub(r'[^\w\s\']', ' ', text)
         
-        # Step 3: Tokenize
+        # Tokenize
         tokens = self.tokenize_text(text)
         
-        # Step 4: Filter tokens
+        # Filter tokens
         tokens = self.filter_tokens(tokens)
         
-        # Step 5: Lemmatize 
+        # Lemmatize 
         if self.use_lemmatization:
             tokens = self.lemmatize_tokens(tokens)
         
-        # Step 6: Join back to text
+        # Join back to text
         return ' '.join(tokens)
 
-def create_preprocessing_pipeline(config: Dict = None) -> TextPreprocessor:
+def preprocessing_pipeline(config: Dict = None) -> TextPreprocessor:
     """Create a text preprocessing pipeline with given configuration"""
     default_config = {
         'remove_stopwords': True,
@@ -160,15 +160,10 @@ def create_preprocessing_pipeline(config: Dict = None) -> TextPreprocessor:
     
     return TextPreprocessor(**default_config)
 
-def preprocess_book_descriptions(df: pd.DataFrame, 
-                                description_column: str = 'description', 
-                                preprocessor: Optional[TextPreprocessor] = None) -> pd.DataFrame:
-    """Preprocess book descriptions in a DataFrame"""
-    df = df.copy()
-    
-    if preprocessor is None:
-        preprocessor = create_preprocessing_pipeline()
-    
-    df['description_processed'] = df[description_column].apply(preprocessor.preprocess_text)
-    
-    return df 
+if __name__ == "__main__":
+    # Example usage
+    preprocessor = preprocessing_pipeline()
+    sample_text = "The quick brown fox jumps over the lazy dog. 12345, the pursuit of hapiness!"
+    processed_text = preprocessor.preprocess_text(sample_text)
+    print("query : ", sample_text)
+    print("Processed Text:", processed_text)

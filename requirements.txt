@@ -4,7 +4,6 @@ faiss-cpu
 google-api-python-client
 langchain-community
 streamlit
-plotly
 python-dotenv
 requests
 tqdm

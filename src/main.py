@@ -5,6 +5,7 @@ from services.recommendation_service import test_vector_store, recommend_books
 from core.text_preprocessor import TextPreprocessor
 
 load_dotenv()
+books_index_file = "../book_index"
 
 def main():
     """Main function to run the book recommendation system"""
@@ -12,11 +13,9 @@ def main():
     print("📚 Book Recommendation System")
     print("=" * 50)
     
-    # Check if vector store exists
-    if os.path.exists("../book_index"):
+    if os.path.exists(books_index_file):
         print("✅ Vector store found!")
         
-        # Test vector store
         if test_vector_store():
             print("\n🎯 Testing recommendation service...\n")
             query = "machine learning and artificial intelligence"

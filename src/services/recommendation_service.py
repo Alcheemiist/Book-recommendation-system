@@ -3,6 +3,8 @@ from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings
 import os
 
+book_index =  "../book_index"
+
 def recommend_books(query: str, k: int = 5) -> pd.DataFrame:
     """
     Recommend books based on a query using vector store similarity search.
@@ -20,7 +22,7 @@ def recommend_books(query: str, k: int = 5) -> pd.DataFrame:
     )
     
     vector_store = FAISS.load_local(
-        "../book_index", 
+        book_index, 
         embeddings_model, 
         allow_dangerous_deserialization=True
     )
@@ -38,7 +40,9 @@ def recommend_books(query: str, k: int = 5) -> pd.DataFrame:
             "description": doc.page_content,
             "similarity_score": score,
             "categories": meta.get("categories", ""),
-            "primary_category": meta.get("primary_category", "General")
+            "primary_category": meta.get("primary_category", "General"),
+            "search_strategy": meta.get("search_strategy", ""),
+            "retrieval_timestamp": meta.get("retrieval_timestamp", "")
         })
     
     return pd.DataFrame(results)
@@ -57,7 +61,7 @@ def test_vector_store() -> bool:
         )
         
         vector_store = FAISS.load_local(
-            "../book_index", 
+            book_index, 
             embeddings_model, 
             allow_dangerous_deserialization=True
         )
@@ -79,7 +83,10 @@ def test_vector_store() -> bool:
         return False
 
 if __name__ == "__main__":
-    # Test the recommendation service
+    # example usage of the recommendation function
     query = "Discover how ancient civilizations molded us into who we are today"
     results = recommend_books(query, 5)
-    print(results) 
+
+    print("Recommended Books:")
+    for _, row in results.iterrows():
+        print(f"{_} - Title : {row['title']}, Authors: {row['authors']}, Similarity Score: {row['similarity_score']:.4f}")

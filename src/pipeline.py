@@ -2,13 +2,15 @@ import os
 from langchain.chains import SequentialChain
 from langchain_openai import OpenAIEmbeddings
 import pandas as pd
+from core.data_loader import GoogleBooksLoader
 from chains.processing_chains import (
     DataCleaningChain, 
     TextPreprocessingChain, 
     EmbeddingGenerationChain, 
     VectorStoreCreationChain
 )
-from core.data_loader import GoogleBooksLoader
+
+books_file = "../data/books.csv"
 
 def create_automated_data_pipeline():
     """Create a complete automated data pipeline using chains"""
@@ -30,7 +32,6 @@ def create_automated_data_pipeline():
     embedding_chain = EmbeddingGenerationChain(embeddings_model)
     vector_store_chain = VectorStoreCreationChain(embeddings_model)
     
-    # SequentialChain
     full_pipeline = SequentialChain(
         chains=[cleaning_chain, preprocessing_chain, embedding_chain, vector_store_chain],
         input_variables=["raw_data"],
@@ -57,20 +58,19 @@ def collect_data():
         print(f"Error collecting data: {str(e)}")
         return None
     
-def run_data_pipeline():
+def run_data_pipeline(books_file):
     """Run the complete data processing pipeline"""
     
-    if not os.path.exists("../data/books.csv"):
+    if not os.path.exists(books_file):
         print("No existing data found. Collecting new data...")
         raw_data = collect_data()
         if raw_data is None:
             return None
-        raw_data.to_csv("../data/books.csv", index=False)
+        raw_data.to_csv(books_file, index=False)
     else:
         print("Loading existing data...")
-        raw_data = pd.read_csv("../data/books.csv")
+        raw_data = pd.read_csv(books_file)
     
-    # Create and run pipeline
     pipeline = create_automated_data_pipeline()
     results = pipeline.invoke({"raw_data": raw_data})
     
@@ -83,5 +83,4 @@ def run_data_pipeline():
     return results
 
 if __name__ == "__main__":
-    # Run the complete pipeline
-    run_data_pipeline() 
+    run_data_pipeline(books_file) 
