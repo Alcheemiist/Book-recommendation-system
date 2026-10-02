@@ -1,6 +1,33 @@
 # Book Recommendation System
 
-A book recommendation system using LangChain, OpenAI embeddings, and FAISS vector search. Collects books from Google Books API and provides semantic recommendations.
+Semantic book search: describe what you want to read in plain language and get the closest matches from a 963-book catalogue, using OpenAI embeddings and a FAISS vector index orchestrated with LangChain.
+
+**Stack:** Python · LangChain · OpenAI `text-embedding-3-small` · FAISS · NLTK · Streamlit · Google Books API
+
+## Results
+
+Evaluated on 10 varied queries, 5 recommendations each (`docs/recommendation_evaluation_summary.md`):
+
+| Query mode | Avg. similarity | Unique titles |
+|---|---|---|
+| Raw query | 0.211 | 50 / 50 |
+| NLTK-preprocessed query | **0.252** (+19%) | 50 / 50 |
+
+Normalising queries the same way as the catalogue (tokenise, lemmatise, drop book-specific stop words) gave the biggest quality gain, with no loss of diversity.
+
+## How it works
+
+```mermaid
+flowchart LR
+  A[Google Books API] --> B[Loader<br/>rate-limited, retries]
+  B --> C[Clean + dedupe]
+  C --> D[NLTK preprocessing]
+  D --> E[OpenAI embeddings]
+  E --> F[(FAISS index)]
+  Q[User query] --> D2[Same preprocessing] --> E2[Query embedding] --> F
+  F --> R[Top-k books + scores]
+  R --> UI[Streamlit UI / CLI]
+```
 
 ## 🏗️ Architecture Overview
 
@@ -142,9 +169,8 @@ Book-recommendation-system/
 ## 📊 Data Files
 
 - `data/books.csv` - Raw book data from Google Books API
-- `data/books_embeddings.csv` - Processed embeddings for vector search
 - `book_index/` - FAISS vector store for fast similarity search
-- `src/recommendation_performance_report.txt` - Performance metrics and analysis
+- `docs/` - Evaluation summary and performance reports (with / without NLTK preprocessing)
 
 ## 📊 Books Distribution
 
